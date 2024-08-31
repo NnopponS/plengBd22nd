@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday, Pleng!</title>
+    <style>
+      body {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background-color: #ffe5ec;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .container {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        color: #ff6f91;
+        font-size: 3em;
+        margin-bottom: 20px;
+        font-family: 'Pacifico', cursive; /* Cute font for title */
+      }
+
+      .image-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin: 0 auto;
+        background-color: #fff;
+      }
+
+      #uploadedImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none; /* Initially hidden */
+        cursor: pointer;
+      }
+
+      .effect-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2em;
+        color: #ff69b4;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      .effect-text.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+
+      .game-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .scramble-word {
+        font-size: 2.5em;
+        color: #ff6f91;
+        margin-bottom: 10px;
+        font-family: 'Comic Sans MS', cursive, sans-serif; /* Cute font for game word */
+      }
+
+      .letter-button {
+        font-size: 2em;
+        padding: 10px;
+        border: none;
+        border-radius: 15px;
+        background-color: #ffafcc;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin: 5px;
+        transition: transform 0.3s ease;
+        display: inline-block;
+        width: 60px; /* Larger button for a more playful look */
+        text-align: center;
+      }
+
+      .letter-button:hover {
+        transform: scale(1.2);
+      }
+
+      .game-result {
+        font-size: 2em;
+        color: #ff69b4;
+        margin-top: 10px;
+        font-family: 'Comic Sans MS', cursive, sans-serif; /* Cute font for result */
+      }
+
+      #resetGame {
+        font-size: 1.5em;
+        padding: 10px 20px;
+        background-color: #ff6f91;
+        color: #fff;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      #resetGame:hover {
+        background-color: #ff4d7a;
+      }
+
+      #message {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        background-color: rgba(255, 255, 255, 0.9);
+        border: 2px solid #ff6f91;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.2em;
+        color: #ff6f91;
+        z-index: 10;
+        font-family: 'Comic Sans MS', cursive, sans-serif; /* Cute font for message */
+      }
+
+      #closeMessage {
+        font-size: 1.2em;
+        padding: 5px 10px;
+        background-color: #ff69b4;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      #closeMessage:hover {
+        background-color: #ff4d7a;
+      }
+
+      .emoji {
+        position: absolute;
+        font-size: 2em;
+        pointer-events: none;
+        animation: rain 5s linear infinite;
+      }
+
+      @keyframes rain {
+        0% {
+          transform: translateY(-100px);
+        }
+        100% {
+          transform: translateY(100vh);
+        }
+      }
+
+      .emoji:nth-child(2n) {
+        animation-duration: 7s;
+      }
+
+      .emoji:nth-child(3n) {
+        animation-duration: 9s;
+      }
+
+      @keyframes kissEffect {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+          transform: scale(3);
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .flash-kiss {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 5em;
+        color: #ff69b4;
+        opacity: 0;
+        animation: kissEffect 1s ease-in-out;
+        z-index: 20;
+      }
+
+      @keyframes heartBounce {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .heart-anim {
+        position: absolute;
+        font-size: 3em;
+        color: #ff69b4;
+        animation: heartBounce 1s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Happy Birthday, Pleng! 🎂🎉</h1>
+      <input type="file" id="imageUpload" accept="image/*" />
+      <div id="imageContainer" class="image-container">
+        <img id="uploadedImage" alt="Your upload will appear here" />
+        <div id="effectText" class="effect-text"></div>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <div class="scramble-word" id="scrambledWord">__ __ __ __ __</div>
+      <div id="letterButtons"></div>
+      <div id="gameResult" class="game-result"></div>
+      <button id="resetGame">Reset Game</button>
+    </div>
+
+    <div id="message">
+      สุขสันต์วันเกิดครบรอบ 22 ปีนะคั้บมีมี่!
+      ปีนี้เรามาทำให้มันเป็นปีที่ดีที่สุดกันเถอะนะ ตั้งใจลดน้ำหนักด้วยกัน
+      เค้าภูมิใจมากๆ ที่เห็นเทอมุ่งมั่นจะลดน้ำหนัก
+      เทอยังเก่งมากที่ร้องเพลงเป็นรายได้ช่วยแม่ได้ขนาดนี้
+      เค้าชื่นชมและรักเพลงมากจริงๆ<br /><br />
+      เราจะพากันไปกินของอร่อยๆ หลังจากออกกำลังกาย จะได้ไม่รู้สึกผิดกัน 😁
+      เค้าโชคดีมากที่ได้ฟังเพลงของเพลงทุกวัน เสียงของเพลงเพราะมากๆ เลยนะมีมี่
+      เหมือนเป็นเสียงของความสุขในทุกๆ วันของเค้า<br /><br />
+      ขอให้เราสองคนรักกันอย่างนี้ไปนานๆ เค้าจะอยู่ข้างๆ เพลงเสมอ
+      ไม่ว่าจะผ่านอะไรมาด้วยกัน สุขสันต์วันเกิดนะมีมี่ รักเพลงที่สุด ❤️
+      <button id="closeMessage">Close</button>
+    </div>
+
+    <div id="flashKiss" class="flash-kiss">💋</div>
+
+    <div id="heartContainer">
+      <!-- Hearts for cute animation -->
+      <div class="heart-anim" style="left: 10%; top: 10%">❤️</div>
+      <div class="heart-anim" style="left: 80%; top: 20%">❤️</div>
+      <div class="heart-anim" style="left: 30%; top: 70%">❤️</div>
+      <div class="heart-anim" style="left: 70%; top: 80%">❤️</div>
+    </div>
+
+    <script>
+      const imageUpload = document.getElementById('imageUpload');
+      const uploadedImage = document.getElementById('uploadedImage');
+      const effectText = document.getElementById('effectText');
+      const scrambledWordElement = document.getElementById('scrambledWord');
+      const letterButtonsContainer = document.getElementById('letterButtons');
+      const gameResult = document.getElementById('gameResult');
+      const resetGameButton = document.getElementById('resetGame');
+      const message = document.getElementById('message');
+      const flashKiss = document.getElementById('flashKiss');
+      const closeMessageButton = document.getElementById('closeMessage');
+
+      let clickCount = 0;
+      let guessedWord = '';
+      const words = ['มีมี่', 'อะบ้วน', 'KNIGHT', 'PLENG', 'LOVE'];
+      let currentLevel = 0;
+
+      function initializeGame() {
+        guessedWord = '';
+        const selectedWord = words[currentLevel];
+        const scrambledWord = selectedWord
+          .split('')
+          .sort(() => Math.random() - 0.5)
+          .join('');
+        scrambledWordElement.textContent = scrambledWord
+          .split('')
+          .map(() => '__')
+          .join(' ');
+        letterButtonsContainer.innerHTML = '';
+        gameResult.textContent = '';
+        scrambledWord.split('').forEach((letter) => {
+          const button = document.createElement('button');
+          button.textContent = letter;
+          button.className = 'letter-button';
+          button.addEventListener('click', function () {
+            guessedWord += letter;
+            scrambledWordElement.textContent = guessedWord.split('').join(' ');
+            button.disabled = true;
+            if (guessedWord.length === selectedWord.length) {
+              if (guessedWord === selectedWord) {
+                flashKiss.style.opacity = 1; // Show kiss effect
+                setTimeout(() => {
+                  flashKiss.style.opacity = 0;
+                }, 1000);
+                if (currentLevel < words.length - 1) {
+                  currentLevel++;
+                  gameResult.textContent = `You got it! 💖 Moving to level ${
+                    currentLevel + 1
+                  }`;
+                  setTimeout(() => {
+                    gameResult.textContent = '';
+                    initializeGame();
+                  }, 2000);
+                } else {
+                  gameResult.textContent =
+                    "Congratulations! You've completed all levels! 🎉";
+                  message.style.display = 'block';
+                }
+              } else {
+                gameResult.textContent = 'Oops! Try again! 😅';
+              }
+            }
+          });
+          letterButtonsContainer.appendChild(button);
+        });
+      }
+
+      imageUpload.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            uploadedImage.src = e.target.result;
+            uploadedImage.style.display = 'block'; // Show the image after loading
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      uploadedImage.addEventListener('click', function () {
+        clickCount++;
+        if (clickCount % 2 === 1) {
+          effectText.innerHTML = 'I love you 💖';
+        } else {
+          effectText.innerHTML = 'Knight & Pleng 🎀';
+        }
+        effectText.classList.add('show');
+        setTimeout(() => {
+          effectText.classList.remove('show');
+        }, 2000);
+      });
+
+      resetGameButton.addEventListener('click', function () {
+        currentLevel = 0;
+        initializeGame();
+      });
+
+      closeMessageButton.addEventListener('click', function () {
+        message.style.display = 'none';
+      });
+
+      // Initialize the game on page load
+      initializeGame();
+
+      // Add raining emojis
+      function createEmojiRain() {
+        const emojis = ['🎈', '🎉', '💖', '🎁', '🥳'];
+        setInterval(() => {
+          const emoji = document.createElement('div');
+          emoji.className = 'emoji';
+          emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          emoji.style.left = `${Math.random() * 100}vw`;
+          emoji.style.top = `${Math.random() * -100}px`; // Start above the viewport
+          document.body.appendChild(emoji);
+          setTimeout(() => document.body.removeChild(emoji), 5000);
+        }, 500);
+      }
+
+      createEmojiRain();
+    </script>
+  </body>
+</html>
